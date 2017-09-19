@@ -19,6 +19,12 @@ void yyerror(char *);
 
 \" { return ASPA; }
 
+[0-9]+[0-9\.]*	{
+	yylval.fltval = atof(yytext);
+        printf ("Achei numero: %f\n", yylval.fltval);
+        return FLOAT;
+       }
+
 [a-zA-Z0-9\.]+  {
         for (int i = 0; i < yyleng; i++ )
           yylval.strval[i] = yytext[i];
@@ -28,8 +34,21 @@ void yyerror(char *);
         return STRING;
        }
 
+
 [=]     {
           return IGUAL;
+        }
+
+[*]     {
+          return MULT;
+        }
+
+[/]     {
+          return DIV;
+        }
+
+[\[\]]     {
+          return BRACKET;
         }
 
 \n   {

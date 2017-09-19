@@ -9,10 +9,12 @@ int yylex(void);
 %}
 %union {
   char    strval[50];
+  float	  fltval;
   int     ival;
 }
 %token <strval> STRING
-%token <ival> VAR IGUAL EOL ASPA
+%token <fltval> FLOAT
+%token <ival> VAR IGUAL MULT DIV BRACKET EOL ASPA
 %left SOMA
 
 %%
@@ -28,7 +30,32 @@ EXPRESSAO:
         imagem I = abrir_imagem($3);
         printf("Li imagem %d por %d\n", I.width, I.height);
         salvar_imagem($1, &I);
+	printf("Copiado com sucesso");
         liberar_imagem(&I);
+                          }
+
+    | STRING IGUAL STRING MULT FLOAT {
+        printf("Aumentando o brilho de %s em %f vezes\n", $1, $5);
+	imagem I = alterar_brilho($3, $5);
+        printf("Li imagem %d por %d\n", I.width, I.height);
+	printf("Brilho alterado com sucesso!\n");
+        salvar_imagem($1, &I);
+        liberar_imagem(&I);
+                          }
+
+    | STRING IGUAL STRING DIV FLOAT {
+        printf("Aumentando o brilho de %s em %f vezes\n", $1, $5);
+	imagem I = alterar_brilho($3, 1/($5));
+        printf("Li imagem %d por %d\n", I.width, I.height);
+	printf("Brilho alterado com sucesso!\n");
+        salvar_imagem($1, &I);
+        liberar_imagem(&I);
+                          }
+
+    | BRACKET STRING BRACKET {
+        printf("Verificando o valor máximo dos pixels de %s\n", $2);
+	int max = maximo($2);
+	printf("O valor máximo entre todos os valores dos pixels de %s é %d\n", $2, max);
                           }
 
     ;
